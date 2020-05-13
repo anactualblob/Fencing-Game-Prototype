@@ -9,38 +9,62 @@ public class PlayerInput : MonoBehaviour
     PlayerInputActions playerInputActions;
 
     [Header("Player Controlled Objects")]
-    [SerializeField] FencingController fencingController = null;
+    [SerializeField] FencingSubController fencingController = null;
+    [SerializeField] PlayerMasterController playerMasterController = null;
     [Header("Aiming")]
     [SerializeField] bool useCurve = false;
     [SerializeField] AnimationCurve aimingStickSensitivityCurve;
 
 
 
-    public float attackAxis;
+    float attackAxis;
     Vector2 aimStick;
+    bool stopFencing;
+
+
+    Vector2 moveStick;
+    Vector2 cameraStick;
+    bool startFencing;
+
+
 
     private void Awake()
     {
         playerInputActions = new PlayerInputActions();
 
-        if (fencingController == null)
-            Debug.LogError("PlayerInput.cs : FencingController not found. Is the field assigned in the inspector?");
+        if (playerMasterController == null)
+            Debug.LogError("PlayerInput.cs : PlayerMasterController not found. Is the field assigned in the inspector?");
     }
     
 
     void Update()
     {
-        // read input
+        #region read input
+        // fencing
         attackAxis = playerInputActions.Fencing.Attack.ReadValue<float>();
         aimStick = playerInputActions.Fencing.Aim.ReadValue<Vector2>();
 
+        stopFencing = playerInputActions.Fencing.StopFencing.triggered;
 
-        // process input if necessary
+
+        // moving around
+        moveStick = playerInputActions.MovingAround.Move.ReadValue<Vector2>();
+        cameraStick = playerInputActions.MovingAround.Camera.ReadValue<Vector2>();
+
+        startFencing = playerInputActions.MovingAround.StartFencing.triggered;
+
+        #endregion
+
+
+        #region process input
+        // apply the curve to the aim input
         if (useCurve)
         {
             aimStick.x = Mathf.Sign(aimStick.x) * aimingStickSensitivityCurve.Evaluate(Mathf.Abs(aimStick.x));
             aimStick.y = Mathf.Sign(aimStick.y) * aimingStickSensitivityCurve.Evaluate(Mathf.Abs(aimStick.y));
         }
+        #endregion
+
 
         // Send the input
         SendInput();
@@ -49,8 +73,19 @@ public class PlayerInput : MonoBehaviour
 
     void SendInput()
     {
-        fencingController.ReceiveAttackInput(attackAxis);
-        fencingController.ReceiveAimInput(aimStick);
+        if (playerMasterController.PlayerState == PlayerMasterController.PlayerControllerState.movingAround )
+        {
+            playerMasterController.MovingAround_ReceiveCameraInput(cameraStick);
+            playerMasterController.MovingAround_ReceiveMoveInput(moveStick);
+            playerMasterController.MovingAround_StartFencing(startFencing);
+
+        }
+        else if (playerMasterController.PlayerState == PlayerMasterController.PlayerControllerState.fencing)
+        {
+            playerMasterController.Fencing_ReceiveAimInput(aimStick);
+            playerMasterController.Fencing_ReceiveAttackInput(attackAxis);
+            playerMasterController.Fencing_StopFencing(stopFencing);
+        }
     }
 
 

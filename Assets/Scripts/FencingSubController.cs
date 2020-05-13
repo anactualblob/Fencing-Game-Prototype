@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class FencingController : MonoBehaviour
+public class FencingSubController : SubController
 {
 
     Animator animator;
+
+
 
     [Header("Attack")]
     [Range(0,1)]
@@ -27,6 +29,18 @@ public class FencingController : MonoBehaviour
     float attackCompletedTime;
     bool outOfRecovery = false;
 
+   
+    public override void OnSubControllerActivate()
+    {
+        animator.SetBool("Fencing", true);
+    }
+
+    public override void OnSubControllerDeactivate()
+    {
+        animator.SetBool("Fencing", false);
+    }
+
+
 
 
     private void Awake()
@@ -34,17 +48,15 @@ public class FencingController : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    void Update()
+    public override void ActiveSubControllerUpdate()
     {
+
 
         if (rawAttackValue > attackStartedThreshold && !attacking)
             attacking = true;
         if (rawAttackValue < attackStartedThreshold && !attackRecovering)
             attacking = false;
             
-
-       
-
 
         
         processedAttackValue = ProcessAttackValue(rawAttackValue);
@@ -124,5 +136,7 @@ public class FencingController : MonoBehaviour
             animator.SetFloat("AimY", aimValue.y);
         }
     }
+
+    
     #endregion
 }
