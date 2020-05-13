@@ -1,0 +1,51 @@
+Combat system :
+
+you aim your sword with the right stick. the animations are blended according to the values of the input. 
+
+
+=================
+
+Attacking :
+
+there are 2 kinds of attacks : lunge(thrust) and swing.
+	- the lunge is the main attack. you lunge by pressing the right trigger. the more you press, the more the character lunges, and if you press fully, you commit to the lunge and that's when the actual attack happens. You get a recovery frames after a lunge attack.
+	The lunge attack is the main way to win the fight. It's the only attack that actually deals damage to the enemy. It can be guarded.
+
+	- the swing is a secondary attack. you swing by pressing the right shoulder button. as soon as you press the button, the attack animation starts. The animation is a swing from where your sword was, through the center of the aiming "circle" to the other side. You have some recovery frames after this attack if it misses.
+	The purpose of the swing is to break the enemy's guard. if you hit the enemy's guard with a swing, their "stun" bar fills up and they are staggered a bit. this can leave them open for a lunge attack. however, if this attack does not hit the enemy's guard, you get some recovery frames and potentially leave yourself open.
+
+
+=================
+
+Guarding :
+
+You can guard by holding the left shoulder button.
+guarding is directional. you can guard up, down, left or right (and blended in between, but you don't have to guard in the exact direction that the enemy attacks.)
+If you're guarding in the right direction when an enemy is lunging, they don't deal you any damage and are left open for the duration of the recovery period for a lunge attack.
+If they swing at your guard, you are staggered for some frames and your "stun" meter builds up. 
+you can drop your guard instantly, but you have to wait a few frames before being able to attack.
+
+
+=================
+
+Stun and Health :
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
