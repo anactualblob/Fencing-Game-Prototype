@@ -33,6 +33,9 @@ public abstract class SubController : MonoBehaviour
                 case SubControllerState.inactive:
                     OnSubControllerDeactivate();
                     break;
+                default:
+                    Debug.LogWarning("SubController.cs : Changing the State of this SubController to '" + value + "'. This case has not been accounted for.");
+                    break;
             }
 
             state = value;
@@ -41,17 +44,17 @@ public abstract class SubController : MonoBehaviour
 
 
     /// <summary>
-    /// Called by the master controller every frame if this subcontroller is the active one
+    /// Called by the master controller every frame if this SubController is the active one
     /// </summary>
     public abstract void ActiveSubControllerUpdate();
 
     /// <summary>
-    /// Called when this subcontroller's State is set to SubControllerState.active
+    /// Called when this SubController's State is set to SubControllerState.active
     /// </summary>
     public abstract void OnSubControllerActivate();
 
     /// <summary>
-    /// Called when this subcontroller's State is set to SubControllerState.inactive
+    /// Called when this SubController's State is set to SubControllerState.inactive
     /// </summary>
     public abstract void OnSubControllerDeactivate();
 }

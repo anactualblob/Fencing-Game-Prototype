@@ -9,23 +9,21 @@ public class PlayerInput : MonoBehaviour
     PlayerInputActions playerInputActions;
 
     [Header("Player Controlled Objects")]
-    [SerializeField] FencingSubController fencingController = null;
     [SerializeField] PlayerMasterController playerMasterController = null;
     [Header("Aiming")]
     [SerializeField] bool useCurve = false;
     [SerializeField] AnimationCurve aimingStickSensitivityCurve;
 
 
-
+    //fencing input storage
     float attackAxis;
     Vector2 aimStick;
     bool stopFencing;
 
-
+    // moving around input storage
     Vector2 moveStick;
     Vector2 cameraStick;
     bool startFencing;
-
 
 
     private void Awake()

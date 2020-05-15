@@ -25,6 +25,10 @@ public class PlayerMasterController : MonoBehaviour
 
     PlayerControllerState playerState = PlayerControllerState.none;
 
+    /// <summary>
+    /// State the player is currently in. Determines which SubController to use.
+    /// <para>Setting this property will change the activeSubController.</para>
+    /// </summary>
     public PlayerControllerState PlayerState
     {
         get { return playerState; }
@@ -50,6 +54,9 @@ public class PlayerMasterController : MonoBehaviour
                     activeSubController = fencingController;
                     break;
 
+                default:
+                    Debug.LogWarning("PlayerMasterController.cs : setting PlayerState property to '" + value + "'. This case has not been accounted for.");
+                    break;
             }
 
             // set the new activeSubController's state to active and assign the value to playerState
@@ -73,6 +80,8 @@ public class PlayerMasterController : MonoBehaviour
     {
         PlayerState = PlayerControllerState.movingAround;
     }
+
+
 
 
     void Update()
@@ -107,12 +116,12 @@ public class PlayerMasterController : MonoBehaviour
     // MovingAroundController input
     public void MovingAround_ReceiveMoveInput(Vector2 moveVector)
     {
-        //throw new System.NotImplementedException();
+        movingAroundController.ReceiveMoveInput(moveVector);
     }
 
     public void MovingAround_ReceiveCameraInput(Vector2 cameraVector)
     {
-        //throw new System.NotImplementedException();
+        movingAroundController.ReceiveCameraInput(cameraVector);
     }
 
     public void MovingAround_StartFencing(bool shouldStartFencing)

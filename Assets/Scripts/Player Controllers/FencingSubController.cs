@@ -42,49 +42,44 @@ public class FencingSubController : SubController
 
 
 
-
     private void Awake()
     {
         animator = GetComponent<Animator>();
     }
 
+
     public override void ActiveSubControllerUpdate()
     {
-
-
+        // we dedetermine if we're attacking based on the raw attack value, not the procesed attack value
+        // (is this intentional? is this motivated? i don't remember ¯\_(ツ)_/¯ )
         if (rawAttackValue > attackStartedThreshold && !attacking)
             attacking = true;
         if (rawAttackValue < attackStartedThreshold && !attackRecovering)
             attacking = false;
-            
-
         
+        
+        // process the attack value. the function does some mandatory processing but extra processing is determined by booleans and variables.
         processedAttackValue = ProcessAttackValue(rawAttackValue);
 
-        if(processedAttackValue >= attackCompletedThreshold && !attackRecovering && !outOfRecovery)
+        // not recovering from an attack
+        if (!attackRecovering && !outOfRecovery)
         {
             // if the value is passed the threshold for attacking, cache the time of attack and start a recovery "timer"
-            attackRecovering = true;
-            attackCompletedTime = Time.time;
+            if (processedAttackValue >= attackCompletedThreshold)
+            {
+                attackRecovering = true;
+                attackCompletedTime = Time.time;
 
-
-            animator.SetFloat("Attack", 1);
-        }
-        
-
-        if (attacking && !attackRecovering && !outOfRecovery)
-        {
+                animator.SetFloat("Attack", 1);
+            }
             // otherwise just assign the value 
-            animator.SetFloat("Attack", processedAttackValue);
+            else if (attacking)
+            {
+                animator.SetFloat("Attack", processedAttackValue);
+            }
         }
 
-        if ( outOfRecovery && rawAttackValue <= attackStartedThreshold )
-        {
-            outOfRecovery = false;
-            attacking = false;
-        }
-        
-
+        // ensure we're not in an attack pose when not attacking
         if (!attacking)
         {
             animator.SetFloat("Attack", 0);
@@ -99,6 +94,13 @@ public class FencingSubController : SubController
             attackRecovering = false;
 
             outOfRecovery = true;
+        }
+
+        // only after having released the attack trigger can we be out of recovery and attack again
+        if (outOfRecovery && rawAttackValue <= attackStartedThreshold)
+        {
+            outOfRecovery = false;
+            attacking = false;
         }
 
 
