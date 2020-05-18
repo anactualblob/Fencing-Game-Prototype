@@ -6,7 +6,23 @@ using UnityEngine;
 public class MovingAroundSubController : SubController
 {
     Vector3 movement = Vector3.zero;
+    [Header("Movement Parameters")]
     [SerializeField] float movementSpeed = 1.0f;
+
+    [Header("Camera Parameters")]
+    [Tooltip("Distance of the camera from the rig's pivot.")]
+    [SerializeField] float cameraDistanceFromPivot = 1.0f;
+    [Tooltip("Offset of the camera rig's pivot position from the position of the character.")]
+    [SerializeField] Vector3 rigOffsetFromPosition;
+    [Space]
+    [Range(0,90)]
+    [SerializeField] float maxLookAngleUp = 0.0f;
+    [Range(0,90)]
+    [SerializeField] float maxLookAngleDown = 0.0f;
+
+    float cameraPitch;
+
+    float cameraYaw;
 
     public override void OnSubControllerActivate()
     {
@@ -22,6 +38,7 @@ public class MovingAroundSubController : SubController
     {
         transform.LookAt(transform.position + movement, Vector3.up);
         transform.Translate(movement * movementSpeed * Time.deltaTime, Space.World);
+        
     }
 
 
@@ -29,13 +46,21 @@ public class MovingAroundSubController : SubController
 
     public void ReceiveMoveInput(Vector2 moveVector)
     {
-        // TODO : make relative to camera
-        movement.x = moveVector.x;
-        movement.z = moveVector.y;
+        // uses the properties horizontalRight and horizontalForward of the cameraRig to make the 
+        //   movement Vector relative to the camera but parallel to the horizontal xz plane.
+        movement = moveVector.x * cameraRig.horizontalRight + moveVector.y * cameraRig.horizontalForward;
     }
 
     public void ReceiveCameraInput(Vector2 cameraVector)
     {
-        //throw new NotImplementedException();
+        cameraPitch += cameraVector.y;
+        cameraYaw += cameraVector.x;
+
+        cameraPitch = Mathf.Clamp(cameraPitch, -maxLookAngleUp, maxLookAngleDown);
+
+        Vector3 rigRot = new Vector3(cameraPitch, cameraYaw, 0);
+        Vector3 rigPos = transform.position + rigOffsetFromPosition;
+
+        cameraRig.SetCameraRigState(rigPos, rigRot, Vector3.back * cameraDistanceFromPivot);
     }
 }

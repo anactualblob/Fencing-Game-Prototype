@@ -11,11 +11,16 @@ public class PlayerMasterController : MonoBehaviour
     SubController activeSubController;
 
     List<SubController> subControllers = new List<SubController>();
-    
+
+    [Tooltip("Main CameraRig, to be handled by the SubControllers.")]
+    [SerializeField] CameraRig mainCameraRig;
 
 
 
-
+    /// <summary>
+    /// This enum describes the different controller states the player can be in. Each state corresponds to a SubController.
+    /// <para>Adding another SubController requires adding the new state to this enum.</para>
+    /// </summary>
     public enum PlayerControllerState
     {
         none,
@@ -38,7 +43,12 @@ public class PlayerMasterController : MonoBehaviour
             if (playerState == value) return;
 
             // if activeSubController is assigned, set its state to inactive
-            if (activeSubController!= null) activeSubController.State = SubController.SubControllerState.inactive;
+            //   also, nullify the cameraRig variable on the activeSubController.
+            if (activeSubController != null)
+            {
+                activeSubController.State = SubController.SubControllerState.inactive;
+                activeSubController.cameraRig = null;
+            }
 
             // assign the new activeSubController according to the value we're setting PlayerState to
             switch (value)
@@ -59,8 +69,11 @@ public class PlayerMasterController : MonoBehaviour
                     break;
             }
 
-            // set the new activeSubController's state to active and assign the value to playerState
+            // set the new activeSubController's state to active and pass the cameraRig to it
             activeSubController.State = SubController.SubControllerState.active;
+            activeSubController.cameraRig = mainCameraRig;
+
+            // finally assign value to playerState
             playerState = value;
         }
     }
@@ -74,6 +87,8 @@ public class PlayerMasterController : MonoBehaviour
     {
         fencingController = GetComponent<FencingSubController>();
         movingAroundController = GetComponent<MovingAroundSubController>();
+
+        if (mainCameraRig == null) Debug.LogError("PlayerMasterController.cs : mainCameraRig is null. Has it been assigned in the inspector ?");
     }
 
     void Start()

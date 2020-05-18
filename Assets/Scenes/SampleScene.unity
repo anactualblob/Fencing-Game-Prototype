@@ -1104,6 +1104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5dd42de1a877574e81f87932ab31b8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraManager: {fileID: 0}
 --- !u!1 &1865708521 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6995859812922819819, guid: 1219c06ab2cf4194c8a57b5f150d9e2e,
@@ -1132,6 +1133,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1955344056}
+  - component: {fileID: 1955344058}
+  - component: {fileID: 1955344057}
   m_Layer: 0
   m_Name: CameraPivot
   m_TagString: Untagged
@@ -1154,6 +1157,34 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 12.973001, y: 23.978, z: 0}
+--- !u!114 &1955344057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1955344055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e1bafd02ca145144a7049d6dd84fd8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxLookAngleUp: 0
+  maxLookAngleDown: 0
+  useCameraDistanceFromScene: 0
+  distanceFromPivotPoint: 0
+--- !u!114 &1955344058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1955344055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eb31277dab553c4c9d58ff3e983033f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1978928513 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9111962883125049612, guid: 1219c06ab2cf4194c8a57b5f150d9e2e,

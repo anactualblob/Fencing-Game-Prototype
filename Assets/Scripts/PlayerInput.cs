@@ -13,6 +13,9 @@ public class PlayerInput : MonoBehaviour
     [Header("Aiming")]
     [SerializeField] bool useCurve = false;
     [SerializeField] AnimationCurve aimingStickSensitivityCurve;
+    [Header("Camera Settings")]
+    [SerializeField] bool invertXAxis;
+    [SerializeField] bool invertYAxis;
 
 
     //fencing input storage
@@ -61,6 +64,10 @@ public class PlayerInput : MonoBehaviour
             aimStick.x = Mathf.Sign(aimStick.x) * aimingStickSensitivityCurve.Evaluate(Mathf.Abs(aimStick.x));
             aimStick.y = Mathf.Sign(aimStick.y) * aimingStickSensitivityCurve.Evaluate(Mathf.Abs(aimStick.y));
         }
+
+        // camera inversion
+        cameraStick.x = invertXAxis ? -cameraStick.x : cameraStick.x;
+        cameraStick.y = invertYAxis ? -cameraStick.y : cameraStick.y;
         #endregion
 
 
