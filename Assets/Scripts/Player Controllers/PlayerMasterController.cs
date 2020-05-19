@@ -42,13 +42,26 @@ public class PlayerMasterController : MonoBehaviour
             // return if we're assigning the same value.
             if (playerState == value) return;
 
-            // if activeSubController is assigned, set its state to inactive
-            //   also, nullify the cameraRig variable on the activeSubController.
+            // if activeSubController is assigned, set its state to inactive (this can throw an exception if the conditions to deactivate the SubControler aren't met)
+            //   also, nullify the cameraRig variable on the activeSubController. (maybe remove this)
             if (activeSubController != null)
             {
-                activeSubController.State = SubController.SubControllerState.inactive;
-                activeSubController.cameraRig = null;
+                try
+                {
+                    activeSubController.State = SubController.SubControllerState.inactive;
+                }
+                catch (SubController.DeactivationFailedException e)
+                {
+                    // if deactivation fails, the SubController should receive a callback and we do nothing to the value of playerState.
+                    activeSubController.OnSubControllerDeactivationFailed(e);
+                    return;
+                }
+                //activeSubController.cameraRig = null;
             }
+
+            // cache the activeSubController before switching it in case the new 
+            //    activeSubController's activation fails and we need to switch back
+            SubController previousSubController = activeSubController;
 
             // assign the new activeSubController according to the value we're setting PlayerState to
             switch (value)
@@ -69,9 +82,23 @@ public class PlayerMasterController : MonoBehaviour
                     break;
             }
 
-            // set the new activeSubController's state to active and pass the cameraRig to it
-            activeSubController.State = SubController.SubControllerState.active;
+            // pass the necessary values to the new active subcontroller (cameraRig, etc.)
+            // and set the new activeSubController's state to active (this can throw an exception so use a try catch) 
             activeSubController.cameraRig = mainCameraRig;
+            try
+            {
+                activeSubController.State = SubController.SubControllerState.active;
+            }
+            catch (SubController.ActivationFailedException e)
+            {
+                // if the activation of the new activeSubController fails, we need to 
+                //     - call its OnActivationFailed function
+                //     - revert activeSubController to the cached previousSubController value
+                //     - return without changing playerState's value
+                activeSubController.OnSubControllerActivationFailed(e);
+                activeSubController = previousSubController; // maybe is null ?
+                return;
+            }
 
             // finally assign value to playerState
             playerState = value;

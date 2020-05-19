@@ -13,9 +13,9 @@ public class FencingSubController : SubController
 
     [Header("Attack")]
     [Range(0,1)]
-    [SerializeField] float attackStartedThreshold;
+    [SerializeField] float attackStartedThreshold = 0;
     [Range(0, 1)]
-    [SerializeField] float attackCompletedThreshold;
+    [SerializeField] float attackCompletedThreshold = 0;
     [Space]
     [SerializeField] float attackRecoveryDuration = 0;
     [Space]
@@ -32,12 +32,27 @@ public class FencingSubController : SubController
    
     public override void OnSubControllerActivate()
     {
+        throw new ActivationFailedException();
+
         animator.SetBool("Fencing", true);
+        // Lock on logic will probably go in here
+        
     }
+
+    public override void OnSubControllerActivationFailed(ActivationFailedException e)
+    {
+        Debug.Log("Couldn't enter fencing SubController !");
+    }
+
 
     public override void OnSubControllerDeactivate()
     {
         animator.SetBool("Fencing", false);
+    }
+
+    public override void OnSubControllerDeactivationFailed(DeactivationFailedException e)
+    {
+        
     }
 
 

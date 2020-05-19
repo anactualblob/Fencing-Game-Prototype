@@ -8,7 +8,7 @@ public abstract class SubController : MonoBehaviour
     public enum SubControllerState
     {
         none,
-        active, 
+        active,
         inactive
     }
 
@@ -65,4 +65,29 @@ public abstract class SubController : MonoBehaviour
     /// Called when this SubController's State is set to SubControllerState.inactive
     /// </summary>
     public abstract void OnSubControllerDeactivate();
+
+    /// <summary>
+    /// Called when OnSubControllerActivate throws an exception, meaning the conditions for this SubController to become active aren't met.
+    /// </summary>
+    public abstract void OnSubControllerActivationFailed(ActivationFailedException e);
+
+    /// <summary>
+    /// Called when OnSubControllerDeactivate throws an exception, meaning the conditions for this SubController to become inactive aren't met.
+    /// </summary>
+    public abstract void OnSubControllerDeactivationFailed(DeactivationFailedException e);
+
+
+    public class ActivationFailedException : System.Exception
+    {
+        public ActivationFailedException() : base() { }
+        public ActivationFailedException(string message) : base(message) { }
+        public ActivationFailedException(string message, System.Exception inner) : base(message, inner) { }
+    }
+
+    public class DeactivationFailedException : System.Exception
+    {
+        public DeactivationFailedException() : base() { }
+        public DeactivationFailedException(string message) : base(message) { }
+        public DeactivationFailedException(string message, System.Exception inner) : base(message, inner) { }
+    }
 }

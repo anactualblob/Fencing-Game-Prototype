@@ -21,16 +21,21 @@ public class MovingAroundSubController : SubController
     [SerializeField] float maxLookAngleDown = 0.0f;
 
     float cameraPitch;
-
     float cameraYaw;
+
 
     public override void OnSubControllerActivate()
     {
+        
     }
+
+    public override void OnSubControllerActivationFailed(ActivationFailedException e) { }
 
     public override void OnSubControllerDeactivate()
     {
     }
+
+    public override void OnSubControllerDeactivationFailed(DeactivationFailedException e) { }
 
 
 

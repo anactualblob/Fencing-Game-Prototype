@@ -313,6 +313,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4eb81c565397f7488d72f616e16e96a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraRig: {fileID: 0}
   attackStartedThreshold: 0.05
   attackCompletedThreshold: 0.95
   attackRecoveryDuration: 0
@@ -630,6 +631,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  invertXAxis: 0
+  invertYAxis: 1
 --- !u!4 &877132540
 Transform:
   m_ObjectHideFlags: 0
@@ -746,7 +749,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0, z: -1.88}
+  m_LocalPosition: {x: 0, y: -0, z: -1.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1955344056}
@@ -1023,6 +1026,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4eb81c565397f7488d72f616e16e96a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraRig: {fileID: 0}
   attackStartedThreshold: 0.05
   attackCompletedThreshold: 0.95
   attackRecoveryDuration: 0.5
@@ -1030,7 +1034,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
+      time: 0.0016059875
       value: 0
       inSlope: 0
       outSlope: 0
@@ -1039,22 +1043,22 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.94579554
-      value: 0.3028787
-      inSlope: 0.80080026
-      outSlope: 0.80080026
+      time: 0.6988183
+      value: 0.22379667
+      inSlope: 0.58673996
+      outSlope: 0.58673996
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.06507871
-      outWeight: 0.10266627
+      inWeight: 0.33333334
+      outWeight: 0.26909745
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 10.602278
-      outSlope: 10.602278
+      inSlope: 6.6285377
+      outSlope: 6.6285377
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.09673137
+      inWeight: 0.05999943
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -1091,7 +1095,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28148712b1b0d5240b73d515a123d365, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 1
+  cameraRig: {fileID: 0}
+  movementSpeed: 3
+  cameraDistanceFromPivot: 1.8
+  rigOffsetFromPosition: {x: 0, y: 1, z: 0}
+  maxLookAngleUp: 80
+  maxLookAngleDown: 80
 --- !u!114 &1849718774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1104,7 +1113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5dd42de1a877574e81f87932ab31b8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraManager: {fileID: 0}
+  mainCameraRig: {fileID: 1955344057}
 --- !u!1 &1865708521 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6995859812922819819, guid: 1219c06ab2cf4194c8a57b5f150d9e2e,
@@ -1133,10 +1142,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1955344056}
-  - component: {fileID: 1955344058}
   - component: {fileID: 1955344057}
   m_Layer: 0
-  m_Name: CameraPivot
+  m_Name: CameraRigPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1150,7 +1158,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1955344055}
   m_LocalRotation: {x: 0.11050535, y: 0.20639548, z: -0.023466632, w: 0.9719253}
-  m_LocalPosition: {x: -0.02, y: 1.06, z: 1.03}
+  m_LocalPosition: {x: 0, y: 1, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 963194228}
@@ -1166,23 +1174,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1955344055}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e1bafd02ca145144a7049d6dd84fd8f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxLookAngleUp: 0
-  maxLookAngleDown: 0
-  useCameraDistanceFromScene: 0
-  distanceFromPivotPoint: 0
---- !u!114 &1955344058
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1955344055}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5eb31277dab553c4c9d58ff3e983033f, type: 3}
+  m_Script: {fileID: 11500000, guid: 9ea0262c5ac9bd7449853f9489836c85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1978928513 stripped
