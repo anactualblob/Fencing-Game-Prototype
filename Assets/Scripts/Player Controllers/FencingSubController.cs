@@ -32,17 +32,13 @@ public class FencingSubController : SubController
    
     public override void OnSubControllerActivate()
     {
-        throw new ActivationFailedException();
 
         animator.SetBool("Fencing", true);
         // Lock on logic will probably go in here
         
     }
 
-    public override void OnSubControllerActivationFailed(ActivationFailedException e)
-    {
-        Debug.Log("Couldn't enter fencing SubController !");
-    }
+    public override void OnSubControllerActivationFailed(ActivationFailedException e) { }
 
 
     public override void OnSubControllerDeactivate()
