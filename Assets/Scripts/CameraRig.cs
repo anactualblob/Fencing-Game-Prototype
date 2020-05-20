@@ -30,6 +30,17 @@ public class CameraRig : MonoBehaviour
         }
     }
 
+
+    public float cameraAspect
+    {
+        get { return rigCamera.aspect; }
+    }
+    
+    public float cameraFOV
+    {
+        get { return rigCamera.fieldOfView;  }
+    }
+    
     void Awake()
     {
         rigCamera = GetComponentInChildren<Camera>();
