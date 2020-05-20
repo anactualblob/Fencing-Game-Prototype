@@ -22,6 +22,7 @@ public class PlayerInput : MonoBehaviour
     float attackAxis;
     Vector2 aimStick;
     bool stopFencing;
+    Vector2 fencingMoveStick;
 
     // moving around input storage
     Vector2 moveStick;
@@ -43,7 +44,9 @@ public class PlayerInput : MonoBehaviour
         #region read input
         // fencing
         attackAxis = playerInputActions.Fencing.Attack.ReadValue<float>();
+
         aimStick = playerInputActions.Fencing.Aim.ReadValue<Vector2>();
+        fencingMoveStick = playerInputActions.Fencing.Move.ReadValue<Vector2>();
 
         stopFencing = playerInputActions.Fencing.StopFencing.triggered;
 
@@ -89,6 +92,7 @@ public class PlayerInput : MonoBehaviour
         {
             playerMasterController.Fencing_ReceiveAimInput(aimStick);
             playerMasterController.Fencing_ReceiveAttackInput(attackAxis);
+            playerMasterController.Fencing_ReceiveMoveInput(fencingMoveStick);
             playerMasterController.Fencing_StopFencing(stopFencing);
         }
     }

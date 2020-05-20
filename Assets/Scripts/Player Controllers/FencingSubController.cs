@@ -61,6 +61,12 @@ public class FencingSubController : SubController
     Vector3 cameraOffset = Vector3.zero;
     Vector3 rigPos = Vector3.zero;
 
+    [Header("Movement")]
+    [SerializeField] float movementSpeed = 1.0f;
+
+    Vector3 movement;
+    bool canMove = true;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -102,6 +108,10 @@ public class FencingSubController : SubController
 
     public override void ActiveSubControllerUpdate()
     {
+        if (canMove)
+        {
+            transform.Translate(movement * movementSpeed * Time.deltaTime, Space.World);
+        }
 
         // face the enemy
         transform.LookAt(fencingTarget.transform, Vector3.up);
@@ -127,6 +137,8 @@ public class FencingSubController : SubController
                 attackRecovering = true;
                 attackCompletedTime = Time.time;
 
+                canMove = false;
+
                 animator.SetFloat("Attack", 1);
             }
             // otherwise just assign the value 
@@ -149,6 +161,8 @@ public class FencingSubController : SubController
         {
             animator.SetFloat("Attack", 0);
             attackRecovering = false;
+
+            canMove = true;
 
             outOfRecovery = true;
         }
@@ -255,6 +269,11 @@ public class FencingSubController : SubController
             animator.SetFloat("AimX", aimValue.x);
             animator.SetFloat("AimY", aimValue.y);
         }
+    }
+
+    public void ReceiveMoveInput(Vector2 moveVector)
+    {
+        movement = moveVector.x * transform.right + moveVector.y * transform.forward;
     }
 
     

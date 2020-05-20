@@ -142,7 +142,7 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: 1219c06ab2cf4194c8a57b5f150d9e2e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -1.28
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 1219c06ab2cf4194c8a57b5f150d9e2e,
         type: 3}
@@ -209,6 +209,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.x
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 4941357277292850161, guid: 1219c06ab2cf4194c8a57b5f150d9e2e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 07b08f47374d41d499f8c6292c3e22cb, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1219c06ab2cf4194c8a57b5f150d9e2e, type: 3}
 --- !u!1001 &167832232
@@ -308,49 +313,11 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 181026417}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4eb81c565397f7488d72f616e16e96a, type: 3}
+  m_Script: {fileID: 11500000, guid: ee3f8cc5dfcb2a0429293677369b2c0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraRig: {fileID: 0}
-  attackStartedThreshold: 0.05
-  attackCompletedThreshold: 0.95
-  attackRecoveryDuration: 0
-  attackCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.15
-      value: 0.2
-      inSlope: 0.4788309
-      outSlope: 0.4788309
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.10266627
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 3.0469377
-      outSlope: 3.0469377
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.04610266
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  useAttackCurve: 0
 --- !u!95 &181026419
 Animator:
   serializedVersion: 3
@@ -749,7 +716,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0, z: -1.8}
+  m_LocalPosition: {x: 0, y: -0, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1955344056}
@@ -1027,6 +994,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraRig: {fileID: 0}
+  canStopFencing: 1
   attackStartedThreshold: 0.05
   attackCompletedThreshold: 0.95
   attackRecoveryDuration: 0.5
@@ -1064,6 +1032,14 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   useAttackCurve: 1
+  cameraLockOnType: 0
+  fencingTarget: {fileID: 181026418}
+  cameraRigPositionBias: 0
+  cameraRigVerticalOffset: 1
+  cameraRigPitch: 0
+  cameraMargin: 2
+  cameraFixedDistance: 2
+  cameraFixedAngle: 30
 --- !u!95 &1849718772
 Animator:
   serializedVersion: 3
@@ -1157,14 +1133,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1955344055}
-  m_LocalRotation: {x: 0.11050535, y: 0.20639548, z: -0.023466632, w: 0.9719253}
-  m_LocalPosition: {x: 0, y: 1, z: 1}
+  m_LocalRotation: {x: 0, y: 0.22869064, z: 0, w: 0.9734992}
+  m_LocalPosition: {x: -0.06, y: 0.84, z: 2.16}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 963194228}
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 12.973001, y: 23.978, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 26.44, z: 0}
 --- !u!114 &1955344057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1229,7 +1205,7 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: 1219c06ab2cf4194c8a57b5f150d9e2e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.249
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 1219c06ab2cf4194c8a57b5f150d9e2e,
         type: 3}
@@ -1306,6 +1282,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.55984575
       objectReference: {fileID: 0}
+    - target: {fileID: 4941357277292850161, guid: 1219c06ab2cf4194c8a57b5f150d9e2e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 34b9775c0cb8c4346b87bf2b8077a6f3, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1219c06ab2cf4194c8a57b5f150d9e2e, type: 3}
 --- !u!1 &2023988632 stripped

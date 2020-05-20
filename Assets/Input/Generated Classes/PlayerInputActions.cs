@@ -41,6 +41,14 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""e9855304-f520-41d9-bbae-b37b338b8052"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -85,6 +93,17 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""StopFencing"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e27e9cd9-a8c1-47ef-ac35-e2c8d9289ec1"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": ""StickDeadzone"",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -175,6 +194,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         m_Fencing_Attack = m_Fencing.FindAction("Attack", throwIfNotFound: true);
         m_Fencing_Aim = m_Fencing.FindAction("Aim", throwIfNotFound: true);
         m_Fencing_StopFencing = m_Fencing.FindAction("StopFencing", throwIfNotFound: true);
+        m_Fencing_Move = m_Fencing.FindAction("Move", throwIfNotFound: true);
         // MovingAround
         m_MovingAround = asset.FindActionMap("MovingAround", throwIfNotFound: true);
         m_MovingAround_Move = m_MovingAround.FindAction("Move", throwIfNotFound: true);
@@ -232,6 +252,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_Fencing_Attack;
     private readonly InputAction m_Fencing_Aim;
     private readonly InputAction m_Fencing_StopFencing;
+    private readonly InputAction m_Fencing_Move;
     public struct FencingActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -239,6 +260,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         public InputAction @Attack => m_Wrapper.m_Fencing_Attack;
         public InputAction @Aim => m_Wrapper.m_Fencing_Aim;
         public InputAction @StopFencing => m_Wrapper.m_Fencing_StopFencing;
+        public InputAction @Move => m_Wrapper.m_Fencing_Move;
         public InputActionMap Get() { return m_Wrapper.m_Fencing; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -257,6 +279,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @StopFencing.started -= m_Wrapper.m_FencingActionsCallbackInterface.OnStopFencing;
                 @StopFencing.performed -= m_Wrapper.m_FencingActionsCallbackInterface.OnStopFencing;
                 @StopFencing.canceled -= m_Wrapper.m_FencingActionsCallbackInterface.OnStopFencing;
+                @Move.started -= m_Wrapper.m_FencingActionsCallbackInterface.OnMove;
+                @Move.performed -= m_Wrapper.m_FencingActionsCallbackInterface.OnMove;
+                @Move.canceled -= m_Wrapper.m_FencingActionsCallbackInterface.OnMove;
             }
             m_Wrapper.m_FencingActionsCallbackInterface = instance;
             if (instance != null)
@@ -270,6 +295,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @StopFencing.started += instance.OnStopFencing;
                 @StopFencing.performed += instance.OnStopFencing;
                 @StopFencing.canceled += instance.OnStopFencing;
+                @Move.started += instance.OnMove;
+                @Move.performed += instance.OnMove;
+                @Move.canceled += instance.OnMove;
             }
         }
     }
@@ -337,6 +365,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         void OnAttack(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
         void OnStopFencing(InputAction.CallbackContext context);
+        void OnMove(InputAction.CallbackContext context);
     }
     public interface IMovingAroundActions
     {

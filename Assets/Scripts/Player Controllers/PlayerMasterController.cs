@@ -149,6 +149,11 @@ public class PlayerMasterController : MonoBehaviour
         fencingController.ReceiveAimInput(aimVector);
     }
 
+    public void Fencing_ReceiveMoveInput(Vector2 moveVector)
+    {
+        fencingController.ReceiveMoveInput(moveVector);
+    }
+
     public void Fencing_StopFencing(bool shouldStopFencing)
     {
         if (shouldStopFencing) PlayerState = PlayerControllerState.movingAround;
