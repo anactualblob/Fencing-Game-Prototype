@@ -12,10 +12,10 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] PlayerMasterController playerMasterController = null;
     [Header("Aiming")]
     [SerializeField] bool useCurve = false;
-    [SerializeField] AnimationCurve aimingStickSensitivityCurve;
+    [SerializeField] AnimationCurve aimingStickSensitivityCurve = null;
     [Header("Camera Settings")]
-    [SerializeField] bool invertXAxis;
-    [SerializeField] bool invertYAxis;
+    [SerializeField] bool invertXAxis = false;
+    [SerializeField] bool invertYAxis = false;
 
 
     //fencing input storage

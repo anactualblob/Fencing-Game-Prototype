@@ -24,7 +24,7 @@ public class FencingSubController : SubController
     [Space]
 
     [SerializeField] AnimationCurve attackCurve = null;
-    [SerializeField] bool useAttackCurve;
+    [SerializeField] bool useAttackCurve = true;
 
     float rawAttackValue;
     float processedAttackValue;

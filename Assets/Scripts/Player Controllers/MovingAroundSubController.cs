@@ -13,7 +13,7 @@ public class MovingAroundSubController : SubController
     [Tooltip("Distance of the camera from the rig's pivot.")]
     [SerializeField] float cameraDistanceFromPivot = 1.0f;
     [Tooltip("Offset of the camera rig's pivot position from the position of the character.")]
-    [SerializeField] Vector3 rigOffsetFromPosition;
+    [SerializeField] Vector3 rigOffsetFromPosition = Vector3.zero;
     [Space]
     [Range(0,90)]
     [SerializeField] float maxLookAngleUp = 0.0f;
@@ -43,7 +43,6 @@ public class MovingAroundSubController : SubController
     {
         transform.LookAt(transform.position + movement, Vector3.up);
         transform.Translate(movement * movementSpeed * Time.deltaTime, Space.World);
-        
     }
 
 

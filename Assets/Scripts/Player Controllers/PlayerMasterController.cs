@@ -5,15 +5,15 @@ using UnityEngine;
 [RequireComponent(typeof(FencingSubController), typeof(MovingAroundSubController))]
 public class PlayerMasterController : MonoBehaviour
 {
-    FencingSubController fencingController;
-    MovingAroundSubController movingAroundController;
+    FencingSubController fencingController = null;
+    MovingAroundSubController movingAroundController = null;
 
-    SubController activeSubController;
+    SubController activeSubController = null;
 
     List<SubController> subControllers = new List<SubController>();
 
     [Tooltip("Main CameraRig, to be handled by the SubControllers.")]
-    [SerializeField] CameraRig mainCameraRig;
+    [SerializeField] CameraRig mainCameraRig = null;
 
 
 
