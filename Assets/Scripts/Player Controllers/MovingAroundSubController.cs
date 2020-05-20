@@ -11,9 +11,9 @@ public class MovingAroundSubController : SubController
 
     [Header("Camera Parameters")]
     [Tooltip("Distance of the camera from the rig's pivot.")]
-    [SerializeField] float cameraDistanceFromPivot = 1.0f;
-    [Tooltip("Offset of the camera rig's pivot position from the position of the character.")]
-    [SerializeField] Vector3 rigOffsetFromPosition = Vector3.zero;
+    [SerializeField] Vector3 cameraOffsetFromPivot = Vector3.zero;
+    [Tooltip("Offset of the camera rig's pivot position from the position of the character on the y axis.")]
+    [SerializeField] float rigHeight = 1.0f;
     [Space]
     [Range(0,90)]
     [SerializeField] float maxLookAngleUp = 0.0f;
@@ -22,6 +22,9 @@ public class MovingAroundSubController : SubController
 
     float cameraPitch;
     float cameraYaw;
+
+    Vector3 rigRot;
+    Vector3 rigPos;
 
 
     public override void OnSubControllerActivate()
@@ -62,9 +65,10 @@ public class MovingAroundSubController : SubController
 
         cameraPitch = Mathf.Clamp(cameraPitch, -maxLookAngleUp, maxLookAngleDown);
 
-        Vector3 rigRot = new Vector3(cameraPitch, cameraYaw, 0);
-        Vector3 rigPos = transform.position + rigOffsetFromPosition;
+        rigRot = new Vector3(cameraPitch, cameraYaw, 0);
+        rigPos = transform.position + Vector3.up * rigHeight;
 
-        cameraRig.SetCameraRigState(rigPos, rigRot, Vector3.back * cameraDistanceFromPivot);
+
+        cameraRig.SetCameraRigState(rigPos, rigRot, cameraOffsetFromPivot);
     }
 }
