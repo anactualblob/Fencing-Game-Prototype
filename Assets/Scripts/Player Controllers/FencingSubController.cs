@@ -35,7 +35,7 @@ public class FencingSubController : SubController
 
 
 
- 
+
 
 
     [Header("Camera")]
@@ -43,19 +43,23 @@ public class FencingSubController : SubController
     [SerializeField] FencingTarget fencingTarget = null; // TODO : REPLACE WITH PROPER DETECTION OF FENCINGTARGET OBJECTS IN AN AREA
     [Space]
 
-    [Range(-1, 1)] [Tooltip("Whether the position of the camera rig pivot is biased towards the enemy, or the player. -1 -> enemy position, 1 -> player position, 0 -> center")]
-    [SerializeField] float cameraRigPositionBias = 0.0f;
-    [Tooltip("Height from the ground of the camera rig pivot point.")]
-    [SerializeField] float cameraRigVerticalOffset = 0.0f;
-    [Tooltip("Rotation of the camera rig on its local x axis. ")]
-    [SerializeField] float cameraRigPitch = 0.0f;
-    [Tooltip("Angle of the camera rig on the y axis, from the line between the two fighters. " +
-        "Negative values put the camera on the left, positive values on the right.")]
-    [SerializeField] float cameraFixedAngle = 0.0f;
+    [SerializeField] FencingCameraState fencingCameraState_near = FencingCameraState.empty;
+    [SerializeField] FencingCameraState fencingCameraState_middle = FencingCameraState.empty;
+    [SerializeField] FencingCameraState fencingCameraState_far = FencingCameraState.empty;
+    [SerializeField] FencingCameraState fencingCameraState_attack = FencingCameraState.empty;
+    [Space]
+    [Tooltip("Whether or not to use fencingCameraState_middle as an intermediate state between _near and _far")]
+    [SerializeField] bool useMiddleCameraState = false;
+    [Tooltip("Distance from the enemy below which the fencingCameraState_near is used.")]
+    [SerializeField] float nearCameraStateThreshold = 0.0f;
+    [Tooltip("Distance from the enemy at which the fencingCameraState_middle is used (if useMiddleCameraState is true)")]
+    [SerializeField] float middleCameraStateThreshold = 0.0f;
+    [Tooltip("Distance from the enemy above which the fencingCameraState_far is used.")]
+    [SerializeField] float farCameraStateThreshold = 0.0f;
     [Space]
     [Tooltip("The minimum distance from the edge of the camera frustum the fighters should be.")]
     [SerializeField] float cameraMargin = 0.0f;
-    [Space] 
+    [Space]
 
     Vector3 rigRot = Vector3.zero;
     Vector3 cameraOffset = Vector3.zero;
@@ -87,7 +91,7 @@ public class FencingSubController : SubController
     }
 
 
-    public override void OnSubControllerActivationFailed(ActivationFailedException e) 
+    public override void OnSubControllerActivationFailed(ActivationFailedException e)
     {
         Debug.LogWarning("Couldn't enter fencing mode. Error message : " + e.Message);
     }
@@ -111,6 +115,21 @@ public class FencingSubController : SubController
         if (canMove)
         {
             transform.Translate(movement * movementSpeed * Time.deltaTime, Space.World);
+
+            if (movement.magnitude > 0.0f)
+            {
+                animator.SetBool("Moving", true);
+                animator.SetFloat("MoveSide", movement.x);
+                animator.SetFloat("MoveForward", movement.z);
+            }
+            else
+            {
+                animator.SetBool("Moving", false);
+            }
+        }
+        else
+        {
+            animator.SetBool("Moving", false);
         }
 
         // face the enemy
@@ -123,8 +142,8 @@ public class FencingSubController : SubController
             attacking = true;
         if (rawAttackValue < attackStartedThreshold && !attackRecovering)
             attacking = false;
-        
-        
+
+
         // process the attack value. the function does some mandatory processing but extra processing is determined by booleans and variables.
         processedAttackValue = ProcessAttackValue(rawAttackValue);
 
@@ -174,9 +193,42 @@ public class FencingSubController : SubController
             attacking = false;
         }
         #endregion
-        
-        UpdateCamera();
 
+
+        #region Camera Updating
+
+        float fightersDistance = Vector3.Distance(transform.position, fencingTarget.transform.position);
+
+        if (fightersDistance > farCameraStateThreshold)
+            UpdateCamera(fencingCameraState_far);
+
+        else if (fightersDistance < nearCameraStateThreshold)
+            UpdateCamera(fencingCameraState_near);
+
+        else
+            if (useMiddleCameraState)
+            {
+                if (fightersDistance <= middleCameraStateThreshold)
+                {
+                    float u = (fightersDistance - nearCameraStateThreshold) / (middleCameraStateThreshold - nearCameraStateThreshold);
+                    FencingCameraState lerpedState = FencingCameraState.Lerp(fencingCameraState_near, fencingCameraState_middle, u);
+                    UpdateCamera(lerpedState);
+                }
+                if (fightersDistance > middleCameraStateThreshold)
+                {
+                    float u = (fightersDistance - middleCameraStateThreshold) / (farCameraStateThreshold - middleCameraStateThreshold);
+                    FencingCameraState lerpedState = FencingCameraState.Lerp(fencingCameraState_middle, fencingCameraState_far, u);
+                    UpdateCamera(lerpedState);
+                }
+            }
+            else
+            {
+                float u = (fightersDistance - nearCameraStateThreshold) / (farCameraStateThreshold - nearCameraStateThreshold);
+                FencingCameraState lerpedState = FencingCameraState.Lerp(fencingCameraState_near, fencingCameraState_far, u);
+                UpdateCamera(lerpedState);
+            }
+
+        #endregion
     }
 
     /// <summary>
@@ -189,20 +241,20 @@ public class FencingSubController : SubController
     /// The distance of the camera from the rig's origin is calculated so that both fighters are always in frame.
     /// </para>
     /// </summary>
-    public void UpdateCamera()
+    void UpdateCamera(FencingCameraState cameraState)
     {
-        // remap cameraRigPositionBias from (-1,1) range to (0,1) range for lerp
-        float u = (cameraRigPositionBias + 1) / 2;
+        // remap positionBias from (-1,1) range to (0,1) range for lerp
+        float u = (cameraState.positionBias + 1) / 2;
 
         // set rig position
         rigPos = Vector3.Lerp(fencingTarget.transform.position, transform.position, u);
-        rigPos.y += cameraRigVerticalOffset;
+        rigPos.y += cameraState.verticalOffset;
 
         // since cameraFixedAngle is relative to the line between the two fighters, we need to add the angle of that line to 
         //      get the angle in "world space"
-        float adjustedAngle = Vector3.SignedAngle(Vector3.forward, fencingTarget.transform.position - transform.position, Vector3.up) + cameraFixedAngle;
+        float adjustedAngle = Vector3.SignedAngle(Vector3.forward, fencingTarget.transform.position - transform.position, Vector3.up) + cameraState.fixedAngle;
 
-        rigRot = new Vector3(cameraRigPitch, adjustedAngle, 0);
+        rigRot = new Vector3(cameraState.pitch, adjustedAngle, 0);
 
         // we need to first find the width we want the frustum to be to frame both the fighters.
         //
@@ -226,7 +278,7 @@ public class FencingSubController : SubController
         dot1 = Vector3.Dot(transform.position - cameraRig.transform.position, cameraRig.horizontalForward);
         dot2 = Vector3.Dot(fencingTarget.transform.position - cameraRig.transform.position, cameraRig.horizontalForward);
 
-        if (dot1 <= 0 || dot2 <= 0) distance += Mathf.Abs(Mathf.Min(dot1, dot2)); 
+        if (dot1 <= 0 || dot2 <= 0) distance += Mathf.Abs(Mathf.Min(dot1, dot2));
 
 
         // the camera will be moved back by the distance we found
@@ -276,6 +328,54 @@ public class FencingSubController : SubController
         movement = moveVector.x * transform.right + moveVector.y * transform.forward;
     }
 
-    
+
     #endregion
+
+
+
+    [System.Serializable]
+    struct FencingCameraState
+    {
+        [Range(-1, 1)] 
+        [Tooltip("Whether the position of the camera rig pivot is biased towards the enemy, or the player. -1 -> enemy position, 1 -> player position, 0 -> center")]
+        public float positionBias;
+
+        [Tooltip("Height from the ground of the camera rig pivot point.")]
+        public float verticalOffset;
+
+        [Tooltip("Rotation of the camera rig on its local x axis. ")]
+        public float pitch;
+
+        [Tooltip("Angle of the camera rig on the y axis, from the line between the two fighters. " +
+        "Negative values put the camera on the left, positive values on the right.")]
+        public float fixedAngle;
+
+
+        static public FencingCameraState empty
+        {
+            get { return new FencingCameraState{}; }
+        }
+
+        /// <summary>
+        /// Returns a linear interpolation of two FencingCameraStates. 
+        /// <para>Performs Mathf.Lerp on each member of the given args and returns a new FencingCameraState with the results of those lerps as members.</para>
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="lerpValue"></param>
+        /// <returns></returns>
+        static public FencingCameraState Lerp(FencingCameraState from, FencingCameraState to, float lerpValue)
+        {
+            return new FencingCameraState
+            {
+                fixedAngle = Mathf.Lerp(from.fixedAngle, to.fixedAngle, lerpValue),
+                positionBias = Mathf.Lerp(from.positionBias, to.positionBias, lerpValue),
+                pitch = Mathf.Lerp(from.pitch, to.pitch, lerpValue),
+                verticalOffset = Mathf.Lerp(from.verticalOffset, to.verticalOffset, lerpValue)
+            };
+        }
+
+    }
+
+
 }

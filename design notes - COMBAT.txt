@@ -1,6 +1,6 @@
-Combat system :
+COMBAT SYSTEM
 
-you aim your sword with the right stick. the animations are blended according to the values of the input. 
+you aim your sword with the right stick. the animations are blended according to the values of the input to give granular control of the movement to the player.
 
 
 =================

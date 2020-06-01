@@ -26,7 +26,7 @@ public class MovingAroundSubController : SubController
     Vector3 rigRot;
     Vector3 rigPos;
 
-
+    #region Activation/Deactivation
     public override void OnSubControllerActivate()
     {
         
@@ -36,10 +36,11 @@ public class MovingAroundSubController : SubController
 
     public override void OnSubControllerDeactivate()
     {
+
     }
 
     public override void OnSubControllerDeactivationFailed(DeactivationFailedException e) { }
-
+    #endregion
 
 
     public override void ActiveSubControllerUpdate()
