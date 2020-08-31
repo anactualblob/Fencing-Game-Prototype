@@ -246,35 +246,38 @@ public class FencingSubController : SubController
         // remap positionBias from (-1,1) range to (0,1) range for lerp
         float u = (cameraState.positionBias + 1) / 2;
 
-        // set rig position
+        // set rig position, between the player and the opponent, according to the positionBias that's been remapped above
         rigPos = Vector3.Lerp(fencingTarget.transform.position, transform.position, u);
         rigPos.y += cameraState.verticalOffset;
 
-        // since cameraFixedAngle is relative to the line between the two fighters, we need to add the angle of that line to 
-        //      get the angle in "world space"
+        // since cameraFixedAngle is relative to the line between the two fighters, we need to add the angle that line makes  
+        //      with the world z axis to get the angle in "world space"
         float adjustedAngle = Vector3.SignedAngle(Vector3.forward, fencingTarget.transform.position - transform.position, Vector3.up) + cameraState.fixedAngle;
 
+        // set te rig rotation
         rigRot = new Vector3(cameraState.pitch, adjustedAngle, 0);
 
-        // we need to first find the width we want the frustum to be to frame both the fighters.
+        // we need to first find the width we want the camera frustum to be to frame both the fighters.
         //
-        // to find this we find the dot product of both their positions (relative to the camera rig position) with 
-        //      the cameraRig.horizontalRight vector.
+        // to find this we get the dot product of both their positions (relative to the camera rig position) with 
+        //      the cameraRig.horizontalRight vector. this gives us the distance of each fighter to the center of 
+        //      the screen.
         //      
-        // we take the biggest result of those two dot products, double it, add an optional margin and we have the 
-        //      width we want the frustum to be.
+        // we take the biggest result of those two distances, double it, add an optional margin and we that gives 
+        //      us the width we want the frustum to be.
+        //
         float dot1 = Mathf.Abs(Vector3.Dot(transform.position - cameraRig.transform.position, cameraRig.horizontalRight));
         float dot2 = Mathf.Abs(Vector3.Dot(fencingTarget.transform.position - cameraRig.transform.position, cameraRig.horizontalRight));
         float width = (Mathf.Max(dot1, dot2) + cameraMargin) * 2;
 
 
-        // once we have the desired width, we apply this formula found on unity's docs to find the distance the camera must   
-        //      be at for the frustum to be a given width : https://docs.unity3d.com/Manual/FrustumSizeAtDistance.html
+        // once we have the desired width, we apply this formula, found on unity's docs, to find the distance the camera    
+        //      must be at for the frustum to be a given width : https://docs.unity3d.com/Manual/FrustumSizeAtDistance.html
         float distance = ((width / cameraRig.cameraAspect) * 0.5f) / Mathf.Tan(cameraRig.cameraFOV * 0.5f * Mathf.Deg2Rad);
 
         // to ensure that no fighter is behind the camera, we check the dot product of both their relative positions
-        //      with the cameraRig's horizontal forward. if one of the to is negative, that means it's behind the 
-        //      cameraRig center. in that case, we add the absolute value of the negative dot product to the distance.
+        //      with the cameraRig.horizontalForward . If one of the two is negative, that means it's behind the 
+        //      cameraRig center. In that case, we add the absolute value of the negative dot product to the distance.
         dot1 = Vector3.Dot(transform.position - cameraRig.transform.position, cameraRig.horizontalForward);
         dot2 = Vector3.Dot(fencingTarget.transform.position - cameraRig.transform.position, cameraRig.horizontalForward);
 
@@ -327,8 +330,6 @@ public class FencingSubController : SubController
     {
         movement = moveVector.x * transform.right + moveVector.y * transform.forward;
     }
-
-
     #endregion
 
 
@@ -376,6 +377,4 @@ public class FencingSubController : SubController
         }
 
     }
-
-
 }

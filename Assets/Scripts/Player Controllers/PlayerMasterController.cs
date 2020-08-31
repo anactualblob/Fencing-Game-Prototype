@@ -108,8 +108,6 @@ public class PlayerMasterController : MonoBehaviour
 
 
 
-
-
     private void Awake()
     {
         fencingController = GetComponent<FencingSubController>();
@@ -124,16 +122,10 @@ public class PlayerMasterController : MonoBehaviour
     }
 
 
-
-
     void Update()
     {
         activeSubController.ActiveSubControllerUpdate();
-
     }
-
-
-
 
 
 
